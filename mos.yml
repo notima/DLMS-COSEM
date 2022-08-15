@@ -1,0 +1,15 @@
+author: Oliver Norin
+description: DLMS/COSEM parsing
+type: lib
+version: 1.0
+manifest_version: 2017-09-29
+sources:
+  - src
+includes:
+  - src
+config_schema:
+  
+tags:
+  - dlms
+  - cosem
+  - c
