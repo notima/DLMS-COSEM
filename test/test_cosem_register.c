@@ -18,9 +18,9 @@ struct dlms_object get_test_object() {
     t_reg_payload[0] = logical_name;
 
     struct dlms_object value;
-    value.type = LONG_UNSIGNED;
+    value.type = LONG;
     value.size = 2;
-    value.payload.LONG_UNSIGNED = &t_payload_value;
+    value.payload.LONG = &t_payload_value;
     t_reg_payload[1] = value;
 
     struct dlms_object scale;
@@ -54,8 +54,15 @@ int main(int argc, char* argv) {
     inspect_dlms_object(&reg, 0);
     struct cosem_register creg = cosem_parse_register(reg);
     printf(
-        "REGISTER:: value: %d\n",
-        *creg.value.LONG_UNSIGNED
+        "\nREGISTER:: logical name: %d-%d:%d.%d.%d.%d; value: %f; unit: %s\n", 
+        creg.logical_name[0], 
+        creg.logical_name[1], 
+        creg.logical_name[2], 
+        creg.logical_name[3], 
+        creg.logical_name[4], 
+        creg.logical_name[5],
+        (double)(*creg.value.LONG) * pow(10, creg.scaler_unit.scaler),
+        cosem_units[creg.scaler_unit.unit]
     );
     return 0;
 }
