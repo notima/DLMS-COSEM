@@ -101,3 +101,12 @@ size_t dlms_parse(struct dlms_object* dest, char* pdu) {
 
     return payload_size + type_bytes;
 }
+
+void dlms_free(struct dlms_object obj) {
+    if(obj.type == ARRAY || obj.type == STRUCT) {
+        for(int i = 0; i < obj.size; i++) {
+            dlms_free(obj.payload.ARRAY[i]);
+        }
+        free(obj.payload.raw);
+    }
+}

@@ -62,6 +62,8 @@ struct dlms_object {
 
 size_t dlms_parse(struct dlms_object* dest, char* pdu);
 
+void dlms_free(struct dlms_object);
+
 #ifdef __cplusplus
 }
 #endif

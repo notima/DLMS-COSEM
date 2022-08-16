@@ -12,5 +12,6 @@ int main(int argc, char* argv) {
     printf("bytes read: %ld\n", bytes_read);
     inspect_dlms_object(&parsed, 0);
     assert_int("array size", 9, parsed.size);
+    dlms_free(parsed);
     return 0;
 }
