@@ -48,8 +48,10 @@ void* reverse_bytes(void *inp, size_t len)
 size_t dlms_parse_payload(struct dlms_object* obj, char* ptr) {
     union dlms_payload result;
     size_t size = 0;
+    result.raw = 0;
     switch(obj->type) {
         case ARRAY:
+        case COMPACT_ARRAY:
         case STRUCT:
             result.raw = malloc(sizeof(struct dlms_object) * obj->size);
             for(int i = 0; i < obj->size; i++) {
@@ -65,6 +67,7 @@ size_t dlms_parse_payload(struct dlms_object* obj, char* ptr) {
             result.raw = ptr;
             break;
 
+        case BOOLEAN:
         case DOUBLE_LONG:
         case DOUBLE_LONG_UNSIGNED:
         case INTEGER:
@@ -79,6 +82,10 @@ size_t dlms_parse_payload(struct dlms_object* obj, char* ptr) {
             size = obj->size;
             result.raw = reverse_bytes(ptr, size);
             break;
+
+
+        case NULL_DATA:
+            size = 0;
     }
 
     obj->payload = result;
@@ -116,14 +123,15 @@ void dlms_free_object(struct dlms_object obj) {
 struct dlms_frame dlms_parse_frame(char* buf) {
     struct dlms_frame frame;
     uint8_t read = 1;
-    uint16_t frame_format = (buf[read++] << 8) | (buf[read] & 0x00ff);
+    uint16_t frame_format = (buf[read] << 8) | (buf[read + 1] & 0x00ff);
+    read++;
     frame.frame_length = frame_format & 0b11111111111;
     frame.dest_address = 0;
     frame.source_address = 0;
     uint8_t dest_addr_len = 1;
     for(; dest_addr_len < 5; dest_addr_len++) {
         frame.dest_address |= (buf[read + dest_addr_len] & 0x000000ff);
-        if(frame.dest_address & 1 == 1)
+        if((frame.dest_address & 1) == 1)
             break;
         frame.dest_address = frame.dest_address << 8;
     }
@@ -131,7 +139,7 @@ struct dlms_frame dlms_parse_frame(char* buf) {
     uint8_t source_addr_len = 1;
     for(; source_addr_len < 5; source_addr_len++) {
         frame.source_address |= (buf[read + source_addr_len] & 0x000000ff);
-        if(frame.source_address & 1 == 1)
+        if((frame.source_address & 1) == 1)
             break;
         frame.source_address = frame.source_address << 8;
     }
@@ -145,9 +153,10 @@ struct dlms_data_notification dlms_parse_data_notification(char* buf) {
     struct dlms_data_notification notif;
     uint8_t read = 3;
     notif.tag = buf[read++];
-    notif.long_invoke_id_and_priority = (buf[read++] << 24) | (buf[read++] << 16) | (buf[read++] << 8) | buf[read++];
+    notif.long_invoke_id_and_priority = (buf[read] << 24) | (buf[read+1] << 16) | (buf[read+2] << 8) | buf[read+3];
+    read += 4;
     if(buf[read++]){
-        notif.date_time = buf[read];
+        notif.date_time = buf + read;
         read += 12;
     }
     dlms_parse_object(&notif.notification_body, buf + read);

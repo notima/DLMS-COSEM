@@ -1,5 +1,5 @@
 #include "stdbool.h"
 
-bool dlms_cosem_init(void) {
+bool mgos_DLMS_COSEM_init(void) {
   return true;
 }
