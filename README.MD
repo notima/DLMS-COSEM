@@ -1,6 +1,6 @@
 # DLMS-COSEM C-Library
 
-This library is used for parsing DLMS/COSEM APDUs
+This library is used for parsing DLMS/COSEM messages
 
 The following COSEM classes are currently supported:
 

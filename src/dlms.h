@@ -60,9 +60,27 @@ struct dlms_object {
     union dlms_payload payload;
 };
 
-size_t dlms_parse(struct dlms_object* dest, char* pdu);
+struct dlms_data_notification {
+    uint8_t tag;
+    uint32_t long_invoke_id_and_priority;
+    char* date_time;
+    struct dlms_object notification_body;
+};
 
-void dlms_free(struct dlms_object);
+struct dlms_frame {
+    uint16_t frame_length;
+    uint32_t dest_address;
+    uint32_t source_address;
+    uint8_t control;
+    struct dlms_data_notification data_notification;
+};
+
+struct dlms_frame dlms_parse_frame(char* buf);
+struct dlms_data_notification dlms_parse_data_notification(char* buf);
+size_t dlms_parse_object(struct dlms_object* dest, char* buf);
+
+
+void dlms_free_object(struct dlms_object);
 
 #ifdef __cplusplus
 }
