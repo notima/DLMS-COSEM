@@ -7,7 +7,6 @@ sources:
   - src
 includes:
   - src
-config_schema:
   
 tags:
   - dlms
