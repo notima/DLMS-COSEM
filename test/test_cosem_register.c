@@ -67,11 +67,11 @@ int main(int argc, char* argv) {
         reg.logical_name[3], 
         reg.logical_name[4], 
         reg.logical_name[5],
-        (double)(*reg.value.LONG) * pow(10, reg.scaler_unit.scaler),
+        (double)(*reg.value.payload.LONG) * pow(10, reg.scaler_unit.scaler),
         cosem_units[reg.scaler_unit.unit]
     );
 
     assert_str("unit string", "V", cosem_units[reg.scaler_unit.unit]);
-    assert_double("scaled value", (double)(*reg.value.LONG) * pow(10, reg.scaler_unit.scaler), (double)VALUE * pow(10, SCALE));
+    assert_double("scaled value", (double)(*reg.value.payload.LONG) * pow(10, reg.scaler_unit.scaler), (double)VALUE * pow(10, SCALE));
     return 0;
 }

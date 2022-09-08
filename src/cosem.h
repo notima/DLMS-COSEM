@@ -12,12 +12,12 @@ struct cosem_scaler_unit {
 
 struct cosem_data {
     unsigned char* logical_name;
-    union dlms_payload value;
+    struct dlms_object value;
 };
 
 struct cosem_register {
     unsigned char* logical_name;
-    union dlms_payload value;
+    struct dlms_object value;
     struct cosem_scaler_unit scaler_unit;
 };
 
