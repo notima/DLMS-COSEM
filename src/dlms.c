@@ -1,4 +1,5 @@
 #include "dlms.h"
+#include <string.h>
 
 size_t data_type_len(enum dlms_data_type type) {
     switch (type) {
@@ -64,7 +65,8 @@ size_t dlms_parse_payload(struct dlms_object* obj, char* ptr) {
         case VISIBLE_STRING:
         case UTF8_STRING:
             size = obj->size;
-            result.raw = ptr;
+            result.raw = malloc(size);
+            memcpy(result.raw, ptr, size); 
             break;
 
         case BOOLEAN:
@@ -80,13 +82,15 @@ size_t dlms_parse_payload(struct dlms_object* obj, char* ptr) {
         case FLOAT64:
         case ENUM:
             size = obj->size;
-            result.raw = reverse_bytes(ptr, size);
+            result.raw = malloc(size);
+            memcpy(result.raw, ptr, size);
+            result.raw = reverse_bytes(result.raw, size);
             break;
 
 
         case NULL_DATA:
             size = 0;
-    }
+    }   
 
     obj->payload = result;
     return size;
@@ -114,6 +118,8 @@ void dlms_free_object(struct dlms_object obj) {
         for(int i = 0; i < obj.size; i++) {
             dlms_free_object(obj.payload.ARRAY[i]);
         }
+    }
+    if(obj.size > 0) {
         free(obj.payload.raw);
     }
 }
