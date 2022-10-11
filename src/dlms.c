@@ -165,7 +165,7 @@ void dlms_free_object(struct dlms_object obj) {
     } 
     else if(obj.type == STRUCT) {
         for(int i = 0; i < obj.size; i++) {
-            dlms_free_object(obj.payload.STRUCT[i]);
+            dlms_free_object(obj.payload.OBJECT[i]);
         }
     }
     if(obj.size > 0) {

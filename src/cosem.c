@@ -5,23 +5,23 @@
 
 struct cosem_data cosem_parse_data(struct dlms_object obj) {
     struct cosem_data result;
-    result.logical_name = obj.payload.STRUCT[0].payload.OCTET_STRING;
-    result.value = obj.payload.STRUCT[1];
+    result.logical_name = obj.payload.OBJECT[0].payload.OCTET_STRING;
+    result.value = obj.payload.OBJECT[1];
     return result;
 }
 
 struct cosem_register cosem_parse_register(struct dlms_object obj) {
     struct cosem_register result;
-    result.logical_name = obj.payload.STRUCT[0].payload.OCTET_STRING;
-    result.value = obj.payload.STRUCT[1];
-    result.scaler_unit = cosem_parse_scaler_unit(obj.payload.STRUCT[2]);
+    result.logical_name = obj.payload.OBJECT[0].payload.OCTET_STRING;
+    result.value = obj.payload.OBJECT[1];
+    result.scaler_unit = cosem_parse_scaler_unit(obj.payload.OBJECT[2]);
     return result;
 }
 
 struct cosem_scaler_unit cosem_parse_scaler_unit(struct dlms_object obj) {
     struct cosem_scaler_unit result;
-    result.scaler = *obj.payload.STRUCT[0].payload.INTEGER;
-    result.unit = *obj.payload.STRUCT[1].payload.UNSIGNED;
+    result.scaler = *obj.payload.OBJECT[0].payload.INTEGER;
+    result.unit = *obj.payload.OBJECT[1].payload.UNSIGNED;
     return result;
 }
 
