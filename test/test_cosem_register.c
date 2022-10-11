@@ -44,13 +44,13 @@ struct dlms_object get_test_object() {
     struct dlms_object scal_unit;
     scal_unit.type = STRUCT;
     scal_unit.size = 2;
-    scal_unit.payload.STRUCT = t_scaler_unit_payload;
+    scal_unit.payload.OBJECT = t_scaler_unit_payload;
     t_reg_payload[2] = scal_unit;
 
     struct dlms_object obj;
     obj.type = STRUCT;
     obj.size = 3;
-    obj.payload.STRUCT = t_reg_payload;
+    obj.payload.OBJECT = t_reg_payload;
 
     return obj;
 }

@@ -18,7 +18,7 @@ void inspect_dlms_object(struct dlms_object* object, uint8_t indentation) {
                 printf("\n");
                 print_indentation(indentation + 1);
                 printf("[%d]", i);
-                inspect_dlms_object(object->payload.STRUCT + i, indentation + 1);
+                inspect_dlms_object(object->payload.OBJECT + i, indentation + 1);
             }
             printf("\n");
             print_indentation(indentation);
