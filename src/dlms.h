@@ -37,7 +37,6 @@ enum dlms_data_type {
 
 union dlms_payload {
     void* raw;
-    struct dlms_object* ARRAY;
     struct dlms_object* STRUCT;
     char* BIT_STRING;
     uint8_t* OCTET_STRING;
@@ -78,6 +77,7 @@ struct dlms_frame {
 struct dlms_frame dlms_parse_frame(char* buf);
 struct dlms_data_notification dlms_parse_data_notification(char* buf);
 size_t dlms_parse_object(struct dlms_object* dest, char* buf);
+size_t dlms_parse_object_in_array(struct dlms_object* dest, struct dlms_object array, uint8_t index);
 
 
 void dlms_free_object(struct dlms_object);

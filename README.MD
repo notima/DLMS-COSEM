@@ -53,6 +53,14 @@ if(parsed.type == INTEGER) {
 ```
 Keep in mind that the payload is always a pointer.
 
+payloads of type ARRAY are not parsed automatically, instead, every element has to be parsed separately using `dlms_parse_object_in_array(struct dlms_object* dest, struct dlms_object array, uint8_t index)`.
+For example:
+
+```C
+struct dlms_object element;
+dlms_parse_object_in_array(&element, *array, 15);
+```
+
 **!!!WARNING!!!**
 
 When parsing dlms objects of type `ARRAY` (1) or `STRUCT` (2), the payload will point to new dlms objects allocated on the heap. this means that they need to be freed manually in order to avoid memory leaks. Since arrays and structs can contain nested arrays and structs, this can become a bit complicated. Therefore, we have the `dlms_free` method to help us free all allocated memory recursively.

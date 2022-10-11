@@ -9,22 +9,35 @@ void print_indentation(uint8_t indentation) {
 }
 
 void inspect_dlms_object(struct dlms_object* object, uint8_t indentation) {
-    //print_indentation(indentation);
     printf("Type: %02x, Size: %d, Content: ", object->type, object->size);
 
     switch(object->type) {
-        case ARRAY:
         case STRUCT:
-            printf("[");
+            printf("{");
             for(int i = 0; i < object->size; i++) {
                 printf("\n");
                 print_indentation(indentation + 1);
                 printf("[%d]", i);
-                inspect_dlms_object(object->payload.ARRAY + i, indentation + 1);
+                inspect_dlms_object(object->payload.STRUCT + i, indentation + 1);
             }
             printf("\n");
             print_indentation(indentation);
-            printf("]");
+            printf("}");
+            break;
+
+        case ARRAY:
+            printf("{");
+            for(int i = 0; i < object->size; i++) {
+                printf("\n");
+                print_indentation(indentation + 1);
+                printf("[%d]", i);
+                struct dlms_object element;
+                dlms_parse_object_in_array(&element, *object, i);
+                inspect_dlms_object(&element, indentation + 1);
+            }
+            printf("\n");
+            print_indentation(indentation);
+            printf("}");
             break;
 
         case BIT_STRING:

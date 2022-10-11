@@ -7,7 +7,6 @@
 int main(int argc, char* argv) {
     assert_int("crc", 0xe0c4, (int)dlms_crc(test_data + 1, sizeof(test_data) - 4));
     printf(":::TESTING DLMS PARSING:::\n");
-    struct dlms_object parsed;
     struct dlms_frame frame = dlms_parse_frame(test_data);
     printf("frame length: %d\ndest address: %x\nsource address: %x\ncontrol bit: %x\n",
         frame.frame_length, frame.dest_address, frame.source_address, frame.control);
@@ -24,6 +23,6 @@ int main(int argc, char* argv) {
     inspect_dlms_object(&frame.data_notification.notification_body, 0);
 
     assert_int("array size", 9, frame.data_notification.notification_body.size);
-    dlms_free_object(parsed);
+    dlms_free_object(frame.data_notification.notification_body);
     return 0;
 }
