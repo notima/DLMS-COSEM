@@ -11,6 +11,12 @@ add_executable(
 )
 
 add_executable(
+    test_step_over
+    test_step_over.c
+    ${SRC}/dlms.c
+)
+
+add_executable(
     test_cosem_register
     test_cosem_register.c
     ${SRC}/dlms.c

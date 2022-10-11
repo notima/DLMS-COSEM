@@ -51,13 +51,16 @@ size_t dlms_parse_payload(struct dlms_object* obj, char* ptr) {
     size_t size = 0;
     result.raw = 0;
     switch(obj->type) {
-        case ARRAY:
         case COMPACT_ARRAY:
         case STRUCT:
             result.raw = malloc(sizeof(struct dlms_object) * obj->size);
             for(int i = 0; i < obj->size; i++) {
                 size += dlms_parse_object((struct dlms_object*)result.raw + i, ptr + size);
             }
+            break;
+
+        case ARRAY:
+            result.raw = ptr;
             break;
 
         case BIT_STRING:
@@ -96,27 +99,73 @@ size_t dlms_parse_payload(struct dlms_object* obj, char* ptr) {
     return size;
 }
 
-size_t dlms_parse_object(struct dlms_object* dest, char* pdu) {
-    dest->type = pdu[0];
-    dest->size = data_type_len(dest->type);
+/**
+ * @brief Get the size of an object from pdu
+ * 
+ * This method returns type bytes and payload sizes separetely.
+ * The type bytes is the bytes that secify the data type of the object.
+ * If the object has a fixed length data type (such as INTEGER), there is 1 type byte.
+ * Variable length types (such as ARRAY or BIT_STRING) need 2 type bytes.
+ * 
+ * For data types ARRAY and STRUCT, number of elements is returned instead of size in bytes.
+ * 
+ * @param len Output variable where the size of the object (Excluding the type bytes) is written.
+ * @param type_bytes Output variable where the number of type bytes is written.
+ * @param size The raw bytes to parse.
+ */
+void get_size_from_pdu(uint8_t* size, uint8_t* type_bytes, char* pdu) {
+    enum dlms_data_type type = (enum dlms_data_type)pdu[0];
+    size[0] = data_type_len(type);
 
-    bool fixed_size = dest->size || !dest->type;
-    uint8_t type_bytes = 1;
+    bool fixed_size = *size || !type;
+    type_bytes[0] = 1;
 
     if(!fixed_size) {
-        dest->size = pdu[1];
-        type_bytes = 2;
+        size[0] = pdu[1];
+        type_bytes[0] = 2;
     }
+}
 
+size_t dlms_parse_object(struct dlms_object* dest, char* pdu) {
+    uint8_t type_bytes = 0;
+
+    dest->type = pdu[0];
+    get_size_from_pdu(&dest->size, &type_bytes, pdu);
     size_t payload_size = dlms_parse_payload(dest, pdu + type_bytes);
 
     return payload_size + type_bytes;
 }
 
+size_t step_over(char* pdu) {
+    enum dlms_data_type type = (enum dlms_data_type)pdu[0];
+    size_t size = 0;
+    uint8_t obj_size = 0;
+    get_size_from_pdu(&obj_size, &size, pdu);
+    if(type == ARRAY || type == STRUCT) {
+        for(int i = 0; i < obj_size; i++) {
+            size += step_over(pdu + size);
+        }
+    } else {
+        size += obj_size;
+    }
+    return size;
+}
+
+size_t dlms_parse_object_in_array(struct dlms_object* dest, struct dlms_object array, uint8_t index) {
+    int pos = 0;
+    for(int i = 0; i < index; i++) {
+        pos += step_over(array.payload.raw + pos);
+    }
+    return dlms_parse_object(dest, array.payload.raw + pos);
+}
+
 void dlms_free_object(struct dlms_object obj) {
-    if(obj.type == ARRAY || obj.type == STRUCT) {
+    if(obj.type == ARRAY) {
+        return;
+    } 
+    else if(obj.type == STRUCT) {
         for(int i = 0; i < obj.size; i++) {
-            dlms_free_object(obj.payload.ARRAY[i]);
+            dlms_free_object(obj.payload.STRUCT[i]);
         }
     }
     if(obj.size > 0) {
