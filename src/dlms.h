@@ -37,7 +37,7 @@ enum dlms_data_type {
 
 union dlms_payload {
     void* raw;
-    struct dlms_object* STRUCT;
+    struct dlms_object* OBJECT;
     char* BIT_STRING;
     uint8_t* OCTET_STRING;
     char* VISIBLE_STRING;
