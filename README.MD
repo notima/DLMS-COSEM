@@ -63,7 +63,7 @@ dlms_parse_object_in_array(&element, *array, 15);
 
 **!!!WARNING!!!**
 
-When parsing dlms objects of type `ARRAY` (1) or `STRUCT` (2), the payload will point to new dlms objects allocated on the heap. this means that they need to be freed manually in order to avoid memory leaks. Since arrays and structs can contain nested arrays and structs, this can become a bit complicated. Therefore, we have the `dlms_free` method to help us free all allocated memory recursively.
+When parsing dlms objects of type `STRUCT` (2), the payload will point to new dlms objects allocated on the heap. this means that they need to be freed manually in order to avoid memory leaks. Since arrays and structs can contain nested arrays and structs, this can become a bit complicated. Therefore, we have the `dlms_free` method to help us free all allocated memory recursively.
 
 Example:
 
