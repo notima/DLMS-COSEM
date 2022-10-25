@@ -140,7 +140,7 @@ size_t step_over(char* pdu) {
     enum dlms_data_type type = (enum dlms_data_type)pdu[0];
     size_t size = 0;
     uint8_t obj_size = 0;
-    get_size_from_pdu(&obj_size, &size, pdu);
+    get_size_from_pdu(&obj_size, (uint8_t)&size, pdu);
     if(type == ARRAY || type == STRUCT) {
         for(int i = 0; i < obj_size; i++) {
             size += step_over(pdu + size);
