@@ -115,13 +115,13 @@
 #define TIME_LENGTH 4
 #define DATETIME_LENGTH 12
 
-struct tm add_time(struct tm* date, unsigned char* raw) {
+void add_time(struct tm* date, unsigned char* raw) {
     date->tm_hour = raw[0];
     date->tm_min = raw[1];
     date->tm_sec = raw[2];
 }
 
-struct tm add_date(struct tm* date, unsigned char* raw) {
+void add_date(struct tm* date, unsigned char* raw) {
     int year = (raw[0] << 8) | raw[1];
     date->tm_year = year;
     date->tm_mon = raw[2];
@@ -130,7 +130,7 @@ struct tm add_date(struct tm* date, unsigned char* raw) {
 }
 
 struct tm parse_time(struct dlms_object time_object) {
-    struct tm result;
+    struct tm result = (struct tm){};
 
     if(time_object.type != OCTET_STRING) {
         //Incorrect data type 
