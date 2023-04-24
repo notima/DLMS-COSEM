@@ -30,9 +30,8 @@ add_executable(
 )
 
 add_executable(
-    test_kamstrup_data
-    test_kamstrup_data.c
-    ${SRC}/dlms.c
+    crc
+    crc_check.c
 )
 
 target_link_libraries(test_cosem_register PRIVATE m)
