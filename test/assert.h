@@ -6,7 +6,7 @@ void assert_int(const char* name, int expect, int real) {
     if(expect == real)
         return;
 
-    printf("%s is incorrect (expected %d, got %d)\n", name, expect, real);
+    printf("%s is incorrect (expected %d (#%x), got %d (#%x))\n", name, expect, expect, real, real);
     exit(1);
 }
 

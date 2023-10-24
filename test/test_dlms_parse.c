@@ -4,10 +4,13 @@
 #include "dlms_inspect.h"
 #include "assert.h"
 
+#define data test_data
+
 int main(int argc, char* argv) {
-    assert_int("crc", 0xe0c4, (int)dlms_crc(test_data + 1, sizeof(test_data) - 4));
+    uint16_t crc = (data[sizeof(data) - 3] << 8) | data[sizeof(data) - 2];
+    assert_int("crc", crc, (int)dlms_crc(data + 1, sizeof(data) - 4));
     printf(":::TESTING DLMS PARSING:::\n");
-    struct dlms_frame frame = dlms_parse_frame(test_data);
+    struct dlms_frame frame = dlms_parse_frame(data);
     printf("frame length: %d\ndest address: %x\nsource address: %x\ncontrol bit: %x\n",
         frame.frame_length, frame.dest_address, frame.source_address, frame.control);
 
