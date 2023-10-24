@@ -1,4 +1,4 @@
-char* cosem_units[] = {
+const char* cosem_units[] = {
     "",
     "a",
     "mo",
