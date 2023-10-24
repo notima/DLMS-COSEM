@@ -63,7 +63,7 @@ struct dlms_data_notification {
     uint8_t tag;
     uint32_t long_invoke_id_and_priority;
     char* date_time;
-    struct dlms_object* notification_body;
+    struct dlms_object notification_body;
 };
 
 struct dlms_frame {

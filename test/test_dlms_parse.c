@@ -20,9 +20,9 @@ int main(int argc, char* argv) {
         frame.data_notification.tag,
         frame.data_notification.long_invoke_id_and_priority);
 
-    inspect_dlms_object(&frame.data_notification.notification_body[0], 0);
+    inspect_dlms_object(&frame.data_notification.notification_body, 0);
 
-    assert_int("array size", 9, frame.data_notification.notification_body[0].size);
-    dlms_free_object(frame.data_notification.notification_body[0]);
+    assert_int("array size", 9, frame.data_notification.notification_body.size);
+    dlms_free_object(frame.data_notification.notification_body);
     return 0;
 }

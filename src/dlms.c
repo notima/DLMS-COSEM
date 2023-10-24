@@ -204,6 +204,13 @@ struct dlms_frame dlms_parse_frame(char* buf) {
     return frame;
 }
 
+void dump(char* buf, uint8_t forward) {
+    for(int i = 0; i < forward; i++) {
+        printf("%02x ", buf[i]);
+    }
+    printf("\n");
+}
+
 struct dlms_data_notification dlms_parse_data_notification(char* buf) {
     struct dlms_data_notification notif;
     uint8_t read = 3;
@@ -212,21 +219,8 @@ struct dlms_data_notification dlms_parse_data_notification(char* buf) {
     read += 4;
     if(buf[read++]){
         notif.date_time = buf + read;
-        read += 12;
+        read += 13;
     }
-    uint16_t step = 0;
-    uint8_t bodyLength = 0;
-    while (buf + read + step + 2 != 0x7e) {
-        step += step_over(buf + read + step);
-        bodyLength++;
-        printf("Step: %d\n", step);
-        printf("Body length: %d\n", bodyLength);
-        if(bodyLength > 5)
-        break;
-    }
-    printf("Body length: %d", bodyLength);
-    while (false){
-        read += dlms_parse_object(&notif.notification_body, buf + read);
-    }
+    read += dlms_parse_object(&notif.notification_body, buf + read);
     return notif;
 }
