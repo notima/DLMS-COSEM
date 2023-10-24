@@ -29,12 +29,6 @@ add_executable(
     ${SRC}/cosem.c
 )
 
-add_executable(
-    test_kamstrup_data
-    test_kamstrup_data.c
-    ${SRC}/dlms.c
-)
-
 target_link_libraries(test_cosem_register PRIVATE m)
 
 enable_testing()
