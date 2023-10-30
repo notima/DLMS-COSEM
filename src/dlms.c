@@ -218,8 +218,12 @@ struct dlms_data_notification dlms_parse_data_notification(char* buf) {
     notif.long_invoke_id_and_priority = (buf[read] << 24) | (buf[read+1] << 16) | (buf[read+2] << 8) | buf[read+3];
     read += 4;
     if(buf[read++]){
+        if(buf[read] == 0x0c){
+            // To accomodate presence of erroneous data type byte
+            read++;
+        }
         notif.date_time = buf + read;
-        read += 13;
+        read += 12;
     }
     read += dlms_parse_object(&notif.notification_body, buf + read);
     return notif;
